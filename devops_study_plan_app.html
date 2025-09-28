@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive DevOps Study Plan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Focused Calm -->
+    <!-- Application Structure Plan: The application is designed as a tabbed, single-page dashboard. This structure was chosen over a linear document to transform the static plan into an actionable, daily-use tool. The main "Dashboard" view immediately answers "What should I do today?", promoting engagement. "The Framework" section provides the guiding principles, "Content Library" makes resources actionable, and "Progress Tracker" adds a motivational feedback loop. This architecture prioritizes user tasks and consistency over the report's original narrative flow, making it significantly more usable for a busy professional. -->
+    <!-- Visualization & Content Choices: Report Info: 60-Min Allocation -> Goal: Show daily time breakdown -> Viz: Donut Chart -> Interaction: Visual timer guide -> Justification: Quick, intuitive visual for the core daily habit. | Report Info: 7-Day Rotation -> Goal: Explain the rotating daily focus -> Viz: Interactive HTML Timeline -> Interaction: Click to expand details -> Justification: Clarifies the short-term strategy and promotes variety. | Report Info: Example Topics -> Goal: Make resources explorable -> Viz: Filterable Cards -> Interaction: Category filter buttons -> Justification: Turns a static list into a practical, browsable library. | Report Info: Consistency Goal -> Goal: Motivate and track progress -> Viz: Bar Chart & Stats -> Interaction: Log session button updates chart -> Justification: Provides crucial positive reinforcement for maintaining the habit. All charts use Chart.js on a Canvas. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .nav-link { transition: all 0.2s ease-in-out; }
+        .nav-link.active {
+            color: #4f46e5;
+            border-bottom: 2px solid #4f46e5;
+            font-weight: 600;
+        }
+        .section { display: none; }
+        .section.active { display: block; }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            height: auto;
+            max-height: 400px;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <div class="container mx-auto p-4 md:p-8">
+        
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-slate-900">The Consistency Framework</h1>
+            <p class="text-slate-600 mt-2">Your interactive dashboard for focused DevOps learning.</p>
+        </header>
+
+        <nav class="flex justify-center border-b border-slate-200 mb-8 space-x-4 md:space-x-8">
+            <button data-view="dashboard" class="nav-link active py-4 px-2 text-sm md:text-base">Dashboard</button>
+            <button data-view="framework" class="nav-link py-4 px-2 text-sm md:text-base">The Framework</button>
+            <button data-view="library" class="nav-link py-4 px-2 text-sm md:text-base">Content Library</button>
+            <button data-view="progress" class="nav-link py-4 px-2 text-sm md:text-base">Progress Tracker</button>
+        </nav>
+
+        <main>
+            <section id="dashboard" class="section active">
+                <div class="text-center mb-8">
+                    <h2 class="text-2xl font-bold text-slate-900">Today's 60-Minute Session</h2>
+                    <p class="text-slate-600 mt-1">Focus on consistency. Start the timer and begin your session.</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                        <div id="timer-display" class="text-6xl font-bold text-indigo-600 mb-4">60:00</div>
+                        <div class="flex gap-4 justify-center">
+                            <button id="start-btn" class="bg-indigo-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-indigo-700 transition">Start Session</button>
+                            <button id="reset-btn" class="bg-slate-200 text-slate-800 font-semibold py-2 px-6 rounded-lg hover:bg-slate-300 transition">Reset</button>
+                        </div>
+                         <button id="log-btn" class="hidden bg-emerald-500 text-white font-semibold py-2 px-8 rounded-lg hover:bg-emerald-600 transition mt-4 w-full">Log Session as Complete</button>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="text-lg font-semibold text-center mb-4">Session Breakdown</h3>
+                        <div class="chart-container">
+                            <canvas id="session-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                 <div class="mt-8 bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-bold text-slate-900 mb-4 text-center">Today's Focus</h3>
+                    <div id="sprint-focus" class="text-center">
+                        
+                    </div>
+                 </div>
+            </section>
+
+            <section id="framework" class="section">
+                <div class="text-center mb-8">
+                    <h2 class="text-2xl font-bold text-slate-900">The Learning Framework</h2>
+                    <p class="text-slate-600 mt-1">Understand the methodology behind consistent growth.</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+                    <h3 class="text-xl font-bold text-slate-900 mb-4 flex items-center">
+                        <span class="text-2xl mr-3"> रूल </span> 1. The Core Rule: Non-Negotiable Time
+                    </h3>
+                    <p class="text-slate-700">The goal is not to finish a course, but to show up for a fixed amount of time every day. This 60-minute block is sacred. It builds the habit that leads to results. Passive learning during commutes or chores complements this focused time.</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+                    <h3 class="text-xl font-bold text-slate-900 mb-4 flex items-center">
+                        <span class="text-2xl mr-3">🎯</span> 2. The 60-Minute Allocation Strategy
+                    </h3>
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div class="border-l-4 border-indigo-500 pl-4">
+                            <h4 class="font-bold">Phase 1: Deep Dive (30 Mins)</h4>
+                            <p class="text-sm text-slate-600">High-concentration, active learning on one primary source (course or book). The goal is to understand one core concept and produce a concise summary to solidify knowledge.</p>
+                        </div>
+                        <div class="border-l-4 border-teal-500 pl-4">
+                            <h4 class="font-bold">Phase 2: Application (20 Mins)</h4>
+                            <p class="text-sm text-slate-600">Practical, hands-on time. Recreate the concept from Phase 1 by writing code, configuring a tool, or testing a manifest. This creates a tangible "knowledge artifact."</p>
+                        </div>
+                        <div class="border-l-4 border-amber-500 pl-4">
+                            <h4 class="font-bold">Phase 3: Passive Input (10 Mins)</h4>
+                            <p class="text-sm text-slate-600">Low-effort exposure to new ideas via podcasts or videos. The goal isn't deep learning but to capture keywords and topics for future deep dives.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-bold text-slate-900 mb-4 flex items-center">
+                        <span class="text-2xl mr-3">🔄</span> 3. The 7-Day Rotation Cycle (For Variety)
+                    </h3>
+                     <p class="text-slate-700 mb-6">To prevent boredom, your Deep Dive focus now rotates every day, ensuring you mix courses, books, and media regularly. Click on a day to see the focus and goal.</p>
+                    <div id="sprint-timeline" class="space-y-4">
+                    </div>
+                </div>
+            </section>
+            
+            <section id="library" class="section">
+                <div class="text-center mb-8">
+                    <h2 class="text-2xl font-bold text-slate-900">Content Library</h2>
+                    <p class="text-slate-600 mt-1">Example topics to enhance strategic thinking and architecture skills.</p>
+                </div>
+
+                <div class="flex justify-center mb-6 space-x-2">
+                    <button class="lib-filter active bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg" data-filter="all">All</button>
+                    <button class="lib-filter bg-white text-slate-800 font-semibold py-2 px-4 rounded-lg border border-slate-300" data-filter="Courses">Courses</button>
+                    <button class="lib-filter bg-white text-slate-800 font-semibold py-2 px-4 rounded-lg border border-slate-300" data-filter="Books">Books</button>
+                    <button class="lib-filter bg-white text-slate-800 font-semibold py-2 px-4 rounded-lg border border-slate-300" data-filter="Podcasts/Videos">Podcasts/Videos</button>
+                </div>
+
+                <div id="library-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                </div>
+            </section>
+
+            <section id="progress" class="section">
+                 <div class="text-center mb-8">
+                    <h2 class="text-2xl font-bold text-slate-900">Progress Tracker</h2>
+                    <p class="text-slate-600 mt-1">Visualize your consistency. Log your sessions from the dashboard.</p>
+                </div>
+                <div class="grid md:grid-cols-3 gap-6 mb-8 text-center">
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="text-slate-500 font-semibold">Total Sessions Logged</h3>
+                        <p id="total-sessions" class="text-4xl font-bold text-indigo-600">0</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="text-slate-500 font-semibold">Current Streak</h3>
+                        <p id="current-streak" class="text-4xl font-bold text-teal-600">0 Days</p>
+                    </div>
+                     <div class="bg-white p-6 rounded-lg shadow-md">
+                        <h3 class="text-slate-500 font-semibold">Total Time Logged</h3>
+                        <p id="total-time" class="text-4xl font-bold text-amber-600">0 Mins</p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="font-bold text-lg mb-4 text-center">Time Logged per Category (Rotation Cycle)</h3>
+                    <div class="chart-container h-80 md:h-96">
+                        <canvas id="progress-chart"></canvas>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            const state = {
+                currentView: 'dashboard',
+                timer: {
+                    interval: null,
+                    timeLeft: 3600, 
+                    running: false
+                },
+                sprint: {
+                    week: 1, 
+                    day: 1
+                },
+                progress: {
+                    log: [], 
+                    courseMinutes: 0,
+                    bookMinutes: 0,
+                    mediaMinutes: 0,
+                }
+            };
+            
+            const views = document.querySelectorAll('.section');
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            const timerDisplay = document.getElementById('timer-display');
+            const startBtn = document.getElementById('start-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const logBtn = document.getElementById('log-btn');
+            
+            let libraryData = []; 
+
+            // Function to parse the Markdown content
+            function parseMarkdownLibrary(markdown) {
+                const lines = markdown.split('\n').filter(line => line.trim() !== '');
+                let currentBucket = '';
+                const data = [];
+
+                lines.forEach(line => {
+                    if (line.startsWith('#')) {
+                        currentBucket = line.replace('#', '').trim();
+                    } else if (line.startsWith('*')) {
+                        const contentParts = line.replace('*', '').trim().split('|').map(p => p.trim());
+                        if (contentParts.length === 2) {
+                            data.push({
+                                bucket: currentBucket,
+                                content: contentParts[0],
+                                matters: contentParts[1]
+                            });
+                        }
+                    }
+                });
+                return data;
+            }
+
+            // The content loaded from the content_library_data.md structure
+            // NOTE: The application reads this string. You must keep the corresponding content_library_data.md file 
+            // open and updated in the environment for the UI to show the latest resources.
+            const libraryMarkdown = `
+# Courses
+* CKS (Certified Kubernetes Security Specialist) | Strengthens security and architectural leadership skills.
+* Advanced Cloud Architecture Certifications | Deepens expertise in scalable and resilient system design.
+* FinOps (Cloud Financial Management) | Aligns technical decisions with business financial strategy.
+
+# Books
+* Accelerate (DORA Metrics) | Provides data-driven insights into high-performing teams.
+* Designing Data-Intensive Applications | A fundamental text for understanding modern data systems.
+* Site Reliability Engineering | The foundational Google guide to building and running reliable systems.
+
+# Podcasts/Videos
+* Arrested DevOps | Broad coverage of DevOps culture, tools, and practices.
+* The Cloudcast | Keeps you current with the latest trends in cloud computing.
+* KubeCon & AWS re:Invent Talks | Deep dives into specific technologies and real-world use cases.
+`;
+
+            // UPDATED: New 7-Day Rotation Cycle
+            const sprintData = [
+                { day: 1, focus: 'Course Deep Dive', category: 'course', description: 'Active learning on a structured course. Goal: Master one specific concept (30 min). ' },
+                { day: 2, focus: 'Book Focus', category: 'book', description: 'Read a chapter or technical paper for theoretical depth. Goal: Understand the underlying principles (30 min). ' },
+                { day: 3, focus: 'Course Deep Dive', category: 'course', description: 'Continue structured course work. Goal: Implement a related lab exercise (30 min).' },
+                { day: 4, focus: 'Media Deep Dive', category: 'media', description: 'Watch a long-form YouTube talk or conference video. Goal: Capture 3 new industry keywords (30 min).' },
+                { day: 5, focus: 'Book Focus', category: 'book', description: 'Read for continued conceptual understanding. Goal: Synthesize reading into a one-paragraph summary (30 min).' },
+                { day: 6, focus: 'Course Deep Dive', category: 'course', description: 'Final structured learning session for the week. Goal: Prepare a small application artifact (20 min).' },
+                { day: 7, focus: 'Consolidation & Review', category: 'media', description: 'Review all notes/artifacts from the week. Use passive time for light industry news or podcasts. Goal: Zero new content, only reinforce existing knowledge.' }
+            ];
+
+            let sessionChart, progressChart;
+
+            function updateView(viewName) {
+                state.currentView = viewName;
+                views.forEach(view => {
+                    view.classList.toggle('active', view.id === viewName);
+                });
+                navLinks.forEach(link => {
+                    link.classList.toggle('active', link.dataset.view === viewName);
+                });
+            }
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => updateView(link.dataset.view));
+            });
+            
+            function formatTime(seconds) {
+                const mins = Math.floor(seconds / 60);
+                const secs = seconds % 60;
+                return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+            }
+
+            function updateTimerDisplay() {
+                timerDisplay.textContent = formatTime(state.timer.timeLeft);
+            }
+
+            function startTimer() {
+                if (state.timer.running) return;
+                state.timer.running = true;
+                startBtn.disabled = true;
+                state.timer.interval = setInterval(() => {
+                    state.timer.timeLeft--;
+                    updateTimerDisplay();
+                    if (state.timer.timeLeft <= 0) {
+                        clearInterval(state.timer.interval);
+                        state.timer.running = false;
+                        timerDisplay.textContent = "Done!";
+                        logBtn.classList.remove('hidden');
+                    }
+                }, 1000);
+            }
+
+            function resetTimer() {
+                clearInterval(state.timer.interval);
+                state.timer.running = false;
+                state.timer.timeLeft = 3600;
+                updateTimerDisplay();
+                startBtn.disabled = false;
+                logBtn.classList.add('hidden');
+            }
+
+            function logSession() {
+                const now = new Date();
+                const today = now.toISOString().split('T')[0];
+                const dayIndex = (state.sprint.day - 1) % 7; // 0 to 6
+                const currentFocus = sprintData[dayIndex];
+                const category = currentFocus.category;
+                
+                state.progress.log.push({ date: today, category });
+
+                // Log 60 minutes to the category of the day's deep dive focus
+                if (category === 'course') state.progress.courseMinutes += 60;
+                else if (category === 'book') state.progress.bookMinutes += 60;
+                else if (category === 'media') state.progress.mediaMinutes += 60;
+
+                // Cycle the sprint day (1 to 7)
+                state.sprint.day++;
+                if (state.sprint.day > 7) {
+                    state.sprint.day = 1;
+                }
+
+                saveState();
+                updateProgressView();
+                resetTimer();
+                console.log('Session logged successfully! Great job!');
+            }
+
+            function renderSprintFocus() {
+                const sprintFocusEl = document.getElementById('sprint-focus');
+                const dayIndex = (state.sprint.day - 1) % 7;
+                const currentFocus = sprintData[dayIndex];
+                
+                sprintFocusEl.innerHTML = `
+                    <p class="text-sm text-slate-500 mb-2">Rotation Day: ${state.sprint.day} / 7</p>
+                    <h4 class="text-2xl font-bold text-indigo-600 mb-2">${currentFocus.focus}</h4>
+                    <p class="text-slate-600">${currentFocus.description}</p>
+                `;
+            }
+
+            function createSessionChart() {
+                const ctx = document.getElementById('session-chart').getContext('2d');
+                sessionChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Deep Dive (30m)', 'Application (20m)', 'Passive Input (10m)'],
+                        datasets: [{
+                            data: [30, 20, 10],
+                            backgroundColor: ['#4f46e5', '#14b8a6', '#f59e0b'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'bottom' }
+                        }
+                    }
+                });
+            }
+            
+            function renderSprintTimeline() {
+                const timelineEl = document.getElementById('sprint-timeline');
+                timelineEl.innerHTML = sprintData.map((s) => `
+                    <div class="sprint-item cursor-pointer p-4 rounded-lg border border-slate-200 hover:bg-slate-100">
+                        <div class="flex justify-between items-center font-semibold">
+                            <span>Day ${s.day}: ${s.focus}</span>
+                            <span class="text-xl">+</span>
+                        </div>
+                        <p class="sprint-description hidden mt-2 text-sm text-slate-600">${s.description}</p>
+                    </div>
+                `).join('');
+
+                document.querySelectorAll('.sprint-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        item.querySelector('.sprint-description').classList.toggle('hidden');
+                        item.querySelector('.text-xl').textContent = item.querySelector('.sprint-description').classList.contains('hidden') ? '+' : '-';
+                    });
+                });
+            }
+            
+            function renderLibrary(filter = 'all') {
+                const gridEl = document.getElementById('library-grid');
+                const filteredData = filter === 'all' ? libraryData : libraryData.filter(item => item.bucket === filter);
+                
+                gridEl.innerHTML = filteredData.map(item => `
+                    <div class="bg-white p-6 rounded-lg shadow-md border-l-4 ${
+                        item.bucket === 'Courses' ? 'border-indigo-500' : 
+                        item.bucket === 'Books' ? 'border-teal-500' : 'border-amber-500'
+                    }">
+                        <span class="text-xs font-semibold uppercase text-slate-500">${item.bucket}</span>
+                        <h4 class="font-bold text-lg mt-1">${item.content}</h4>
+                        <p class="text-sm text-slate-600 mt-2">${item.matters}</p>
+                    </div>
+                `).join('');
+            }
+            
+            function setupLibraryFilters() {
+                const filterBtns = document.querySelectorAll('.lib-filter');
+                filterBtns.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        filterBtns.forEach(b => b.classList.remove('active', 'bg-indigo-600', 'text-white'));
+                        filterBtns.forEach(b => b.classList.add('bg-white', 'text-slate-800'));
+
+                        btn.classList.add('active', 'bg-indigo-600', 'text-white');
+                        btn.classList.remove('bg-white', 'text-slate-800');
+                        renderLibrary(btn.dataset.filter);
+                    });
+                });
+            }
+
+            function createProgressChart() {
+                const ctx = document.getElementById('progress-chart').getContext('2d');
+                progressChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Course Focus', 'Book Focus', 'Media/Consolidation'],
+                        datasets: [{
+                            label: 'Minutes Logged',
+                            data: [0, 0, 0],
+                            backgroundColor: ['#4f46e5', '#14b8a6', '#f59e0b']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: { y: { beginAtZero: true } },
+                        plugins: { legend: { display: false } }
+                    }
+                });
+            }
+
+            function calculateStreak(log) {
+                if (log.length === 0) return 0;
+                let streak = 0;
+                const sortedDates = [...new Set(log.map(item => item.date))].sort().reverse();
+                
+                if (sortedDates.length === 0) return 0;
+
+                const today = new Date();
+                const yesterday = new Date(today);
+                yesterday.setDate(yesterday.getDate() - 1);
+
+                const todayStr = today.toISOString().split('T')[0];
+                const yesterdayStr = yesterday.toISOString().split('T')[0];
+
+                let lastDate = new Date(sortedDates[0]);
+                const lastDateStr = lastDate.toISOString().split('T')[0];
+
+                // Check if the last entry was today or yesterday
+                if (lastDateStr === todayStr || lastDateStr === yesterdayStr) {
+                    streak = 1;
+                    for (let i = 0; i < sortedDates.length - 1; i++) {
+                        const current = new Date(sortedDates[i]);
+                        const next = new Date(sortedDates[i+1]);
+                        const diffTime = current - next;
+                        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                        // Only count consecutive days
+                        if (diffDays === 1) {
+                            streak++;
+                        } else {
+                            break;
+                        }
+                    }
+                }
+                return streak;
+            }
+
+            function updateProgressView() {
+                const totalSessionsEl = document.getElementById('total-sessions');
+                const currentStreakEl = document.getElementById('current-streak');
+                const totalTimeEl = document.getElementById('total-time');
+
+                totalSessionsEl.textContent = state.progress.log.length;
+                currentStreakEl.textContent = `${calculateStreak(state.progress.log)} Days`;
+                totalTimeEl.textContent = `${state.progress.log.length * 60} Mins`;
+
+                progressChart.data.datasets[0].data = [
+                    state.progress.courseMinutes,
+                    state.progress.bookMinutes,
+                    state.progress.mediaMinutes
+                ];
+                progressChart.update();
+            }
+
+            function saveState() {
+                localStorage.setItem('devopsStudyPlanState', JSON.stringify(state));
+            }
+
+            function loadState() {
+                const savedState = localStorage.getItem('devopsStudyPlanState');
+                if (savedState) {
+                    const loaded = JSON.parse(savedState);
+                    Object.assign(state, loaded);
+                    // Ensure sprint day resets if needed, or if the structure was changed (like now)
+                    if (state.sprint.day > 7) {
+                        state.sprint.day = 1; 
+                    }
+                }
+            }
+            
+            function init() {
+                loadState();
+                
+                // Initialize libraryData from the Markdown string
+                libraryData = parseMarkdownLibrary(libraryMarkdown);
+
+                updateTimerDisplay();
+                startBtn.addEventListener('click', startTimer);
+                resetBtn.addEventListener('click', resetTimer);
+                logBtn.addEventListener('click', logSession);
+
+                createSessionChart();
+                
+                renderSprintFocus();
+                renderSprintTimeline();
+                
+                renderLibrary();
+                setupLibraryFilters();
+
+                createProgressChart();
+                updateProgressView();
+            }
+
+            init();
+        });
+    </script>
+</body>
+</html>
