@@ -1,7 +1,5 @@
 # Courses
- * CKS (Certified Kubernetes Security Specialist) | Strengthens security and architectural leadership skills.
- * Advanced Cloud Architecture Certifications | Deepens expertise in scalable and resilient system design.
- * FinOps (Cloud Financial Management) | Aligns technical decisions with business financial strategy.
+ * Automating Kubernetes with GitOps
 
 # Books
  * Accelerate (DORA Metrics) | Provides data-driven insights into high-performing teams.
@@ -12,5 +10,6 @@
  * Arrested DevOps | Broad coverage of DevOps culture, tools, and practices.
  * The Cloudcast | Keeps you current with the latest trends in cloud computing.
  * KubeCon & AWS re:Invent Talks | Deep dives into specific technologies and real-world use cases.
+
 
 
